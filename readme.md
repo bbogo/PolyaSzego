@@ -22,4 +22,6 @@ Main functions:
 
 The certification of local minimality is successful for $n=5$, $m=250$ and $n=6$, $m=380$. The routines may take a long time, or even fail to execute for $m \geq 400$.
 
-The `Tools` subfolder contains 
+The `Tools` subfolder contains all necessary sub-routines. Some of them are of potential interest for other applications:
+
+`verifyeig_BB.m`: a modification of `verifyeig` from INTLAB allowing to handle larger matrices (a matrix inverse is replaced with a few linear systems). `verifyeig_FEM.m` goes even further, replacing a linear system resolution which fails for large matrices with an iterative one. 
