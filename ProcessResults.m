@@ -1,11 +1,17 @@
 function ProcessResults(n)
+%
+% Process results for a given n and a given sequence of mesh sizes
+% PolyaHessIntervalU should be run before on every one of the cases
 
-saving = 1;
+% Save images or not: uses 'export_fig'
+saving = 0;
 
+% list of mesh parameters m 
 ms = 200:50:600;
 
-radFEM = zeros(size(ms));
-radFin = zeros(size(ms));
+% Various initialization
+radFEM = zeros(size(ms)); % radii FEM eigenvalues
+radFin = zeros(size(ms)); % radii final eigenvalues
 
 Aest = zeros(size(ms));
 
@@ -17,6 +23,7 @@ Err   = zeros(size(ms));
 AllEig = zeros(2*n-4,length(ms));
 AllErr = zeros(2*n-4,length(ms));
 
+% load all information from computed data
 for ii = 1:length(ms)
 	m = ms(ii)
 	str = ['./Results/CompPolya_',num2str(n),'_',num2str(m),'.mat']
