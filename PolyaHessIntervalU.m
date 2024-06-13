@@ -478,8 +478,9 @@ end
 try
 	load ConstantsP1;
 catch
-	OptimalC = [0,0,0.8457,0.4888,0.3679,0.3185,0.3131,0.3092,0.3088,0.3110];
+	OptimalC = [0,0,0.8499,0.4912,0.3697,0.3200,0.3146,0.3107,0.3104,0.3127];
 end
+
 
 % Choose the constant corresponding to the isosceles triangles
 % with top angle 2pi/n 
