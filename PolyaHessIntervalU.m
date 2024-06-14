@@ -33,7 +33,7 @@ ArTri = 0.5*h^2*sin(theta); % area of a small triangle in the mesh
 opts.arM = ArTri;
 opts.n   = n;
 
-gamfact  = 1;            % factor for scaling preconditioner in saddle point system
+gamfact  = 10;            % factor for scaling preconditioner in saddle point system
 
 % Mesh generation for a slice of the regular n-gon
 [pts0,tri0,Inside0,ends0] = MeshSlice(n,m);
@@ -178,11 +178,11 @@ rhs1_int = 2*Kxx_int*u_int-1/tan(theta)*(Kxy_int)*u_int-2*LB1/n*M_int*u_int;
 rhs2_int = -2/tan(theta)*Kyy_int*u_int+Kyx_int*u_int;
 
 % build constraint vector
-con = M_int*u_int;
-gam = gamfact*1/norm(con);
+con0 = M_int*u_int;
+gam = gamfact*1/norm(con0);
 
 % re-normalize constraint vector
-con = gam*con;
+con = gam*con0;
 
 
 % consider submatrices corresponding to the inside nodes
