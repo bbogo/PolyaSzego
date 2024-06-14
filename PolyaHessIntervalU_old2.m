@@ -33,7 +33,8 @@ ArTri = 0.5*h^2*sin(theta); % area of a small triangle in the mesh
 opts.arM = ArTri;
 opts.n   = n;
 
-gamfact  = 1;            % factor for scaling preconditioner in saddle point system
+lamMin  = 1/12*min(n,6)*ArTri;
+lamMax  = 1/3*max(n,6)*ArTri;
 
 % Mesh generation for a slice of the regular n-gon
 [pts0,tri0,Inside0,ends0] = MeshSlice(n,m);
@@ -179,10 +180,9 @@ rhs2_int = -2/tan(theta)*Kyy_int*u_int+Kyx_int*u_int;
 
 % build constraint vector
 con = M_int*u_int;
-gam = gamfact*1/norm(con);
 
 % re-normalize constraint vector
-con = gam*con;
+%con = 1/norm(con)*con;
 
 
 % consider submatrices corresponding to the inside nodes
@@ -268,39 +268,66 @@ if(pl==1)
 end
 
 % Error estimation for saddle point systems
-% Lemma 4.7 in [1], computation of quantities involved
+% Proposition 4.7 in [1], computation of quantities involved
 % is detailed below 
 % Error estimation using norms of residuals:
 
-normR1 = norm(Residual1);
-normR2 = norm(Residual2);
+%lamMin
 
-% lower bound for the difference lam2-lam1
-lbDiff = LB2-LB1;
+%eigs(M0_int.mid,1,'sm')
 
-bb     = con(Inside);
-normbb = norm(bb);
-normA  = max(mat(:));
+%pause
 
-w      = (LB2-LB1)/gam^2;  
 
-% upper bound for ||A(w)^{-1}||_2 from the estimate
-ubInvAw = max(1/lbDiff,1/(gam^2*w));
+% residual in L2
 
-% upper bound for |A(w)||b^Tb|^(-1)
-ubAw   = max(mat(:))/norm(bb)^2+w;
-sqrt5    = sqrt(intval('5'));
+%U1(Inside) = U1(Inside)-dot(U1(Inside),con(Inside).mid)*u_int(Inside).mid;
 
-% upper bound for error U
-ConstU   = intval(2/(sqrt5-1))*max(ubInvAw,ubAw);
+res1      = mat*U1(Inside)-rhs1_int(Inside);
+max(res1.rad)
+% squared residual in M^{-1} norm
+norm(res1)^2
+norm(res1)
+norm(res1,'inf')
+res1_Mm1  = 1/lamMin*norm(res1)^2
+
+% orthogonality 
+orth1     = dot(con(Inside),U1(Inside))^2
+% error in M norm
+
+res1_Mm1/(LB2-LB1)^2
+ErrorU1_M = sqrt(orth1+res1_Mm1/(LB2-LB1)^2)
+% error in L^2 norm for U1
+ErrorU1   = sqrt(1/lamMin)*ErrorU1_M
+
+rr = norm(res1);
+fprintf("LamMin   = %.4e\n",lamMin.sup);
+fprintf("res1     = %.4e\n",rr.sup);
+fprintf("res1M-1  = %.4e\n",res1_Mm1.sup);
+fprintf("Error1M  = %.4e\n",ErrorU1_M.sup);
+fprintf("ErrorU1  = %.4e\n",ErrorU1.sup);
+
+pause
+
+% residual in L^2
+res2      = mat*U2(Inside)-rhs2_int(Inside);
+% squared residual in M^{-1} norm
+
+res2_Mm1  = 1/lamMin*norm(res2)^2
+
+orth2     = dot(con(Inside),U2(Inside))^2;
+ErrorU2_M = sqrt(orth2+res2_Mm1/(LB2-LB1)^2);
+ErrorU2   = sqrt(1/lamMin)*ErrorU2_M;
+
 
 % Finding error starting from the residual
-ErrorU1  = ConstU*normR1;
-ErrorU2  = ConstU*normR2;
+%ErrorU1  = ConstU*normR1;
+%ErrorU2  = ConstU*normR2;
 
 fprintf("  Error estimate U1 - discrete: %.2e\n",ErrorU1.sup);
 fprintf("  Error estimate U2 - discrete: %.2e\n",ErrorU2.sup);
 
+pause
 
 % Set interval solution starting from the floating point
 % solution and enclosing with the residual error

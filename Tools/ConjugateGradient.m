@@ -50,7 +50,7 @@ for i=1:maxiter
 	gamma = -dot(d,g)/dot(d,vv);
 	x     = x+gamma*d;
 	g     = g+gamma*vv;
-	beta  = dot(g,vv)/dot(d,vv);
+	beta  = dot(g',vv)/dot(d',vv);
 	d     = -g+beta*d; 
 	
 	ng = norm(g);
