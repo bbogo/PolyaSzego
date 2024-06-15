@@ -1,6 +1,5 @@
 function [L,X] = verifyeig(A,lambda,xs,B)
 %VERIFYEIG      Verification of eigenvalue (cluster) near (lamda,xs)
-%Modified by Beniamin Bogosel, avoiding matrix inverses
 %   [L,X] = VerifyEig(A,lambda,xs,B)
 %
 %Input: an approximate eigenvalue/eigenvector pair (lambda,xs).
@@ -37,7 +36,7 @@ function [L,X] = verifyeig(A,lambda,xs,B)
 % modified 05/15/14     S.M. Rump  code optimization
 % modified 07/30/16     S.M. Rump  rounding check by getround for Matlab 2016b 
 % modified 03/03/20     S.M. Rump  performance improvement
-%
+% modified 2024         B. Bogosel avoiding matrix inverses
 
   rndold = getround;
   if rndold
@@ -72,7 +71,6 @@ function [L,X] = verifyeig(A,lambda,xs,B)
     C = A - intval(lambda)*speye(n);     % same as before
     %Z = - R * ( C * xs )              % replace with a linear system 
     Z = -verifylss(R,(C*xs));
-    
     C(:,v) = -xs;
     %C = speye(n) - R * C;
     Y = Z;
@@ -86,11 +84,9 @@ function [L,X] = verifyeig(A,lambda,xs,B)
       XX = X;
       XX(v,:) = 0;
       %Y = Z + C*X + R*(XX*X(v,:)); % replace with linear systems
-      
       % Reformulate iteration using linear system
       Y1 =  (R-C)*X+XX*X(v,:); 
       Y = Z+verifylss(R,Y1);
-      
       ready = all(all(in0(Y,X)));
     end
 
@@ -108,6 +104,7 @@ function [L,X] = verifyeig(A,lambda,xs,B)
     R = midA - lambda*midB;
     R(:,v) = -midB*xs;
     
+    % without matrix inversion
     %R = inv( R );
     C = A - intval(lambda)*B;
     Z = - verifylss(R,( C * xs ));
