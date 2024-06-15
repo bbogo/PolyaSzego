@@ -181,7 +181,7 @@ else
 	% Remark 4.5
 	disp("     Direct estimation - eigenvalues of mass matrix");
 	resnorm2 = norm(residual);
-	resnorm  = sqrt(intval(2)/(min(n,6)*ArTri))*resnorm2;
+	resnorm  = sqrt(intval(12)/(min(n,6)*ArTri))*resnorm2;
 end
 vecnorm = sqrt(dot(v(:,1),M1*v(:,1)));
 

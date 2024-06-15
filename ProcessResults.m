@@ -4,7 +4,7 @@ function ProcessResults(n)
 % PolyaHessIntervalU should be run before on every one of the cases
 
 % Save images or not: uses 'export_fig'
-saving = 0;
+saving = 1;
 
 % list of mesh parameters m 
 ms = 200:50:600;

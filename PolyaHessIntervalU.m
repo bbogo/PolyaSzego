@@ -33,7 +33,8 @@ ArTri = 0.5*h^2*sin(theta); % area of a small triangle in the mesh
 opts.arM = ArTri;
 opts.n   = n;
 
-gamfact  = 10;            % factor for scaling preconditioner in saddle point system
+gamfact  = 10;            % factor for scaling the normalization condition
+
 
 % Mesh generation for a slice of the regular n-gon
 [pts0,tri0,Inside0,ends0] = MeshSlice(n,m);
